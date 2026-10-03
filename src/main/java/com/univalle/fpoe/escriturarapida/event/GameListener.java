@@ -1,52 +1,48 @@
 package com.univalle.fpoe.escriturarapida.event;
 
 /**
- * Contract for objects that want to be notified about relevant
- * events that occur during a "Escritura Rapida" (Speed Typing) match.
+ * Listener for the events of an "Escritura Rapida" match.
  * <p>
- * This interface is the core of the custom, event-driven communication
- * between the {@code GameModel} (event source) and the
- * {@code GameController} (event consumer). Implementing this interface
- * decouples the game logic from the JavaFX user interface.
+ * The {@code GameModel} fires these events and the controller
+ * implements them to update the user interface.
  *
- * @author FPOE Team
+ * @author Santiago Ruiz Vanegas
  * @version 1.0
  */
 public interface GameListener {
 
     /**
-     * Invoked every time a new level starts and a new word/phrase
-     * must be displayed to the player.
+     * Called when a new level starts.
      *
-     * @param level     the level number that is starting (1-based)
-     * @param word      the random word or phrase the player must type
-     * @param timeLimit the time limit, in seconds, available for this level
+     * @param level     the level that starts
+     * @param word      the word or phrase the player must type
+     * @param timeLimit the time limit for this level, in seconds
      */
     void onLevelStart(int level, String word, double timeLimit);
 
     /**
-     * Invoked when the player types the exact word/phrase before the
-     * time runs out.
+     * Called when the player types the word correctly.
      *
-     * @param level the level number that was just completed
+     * @param level the level that was completed
      */
     void onLevelSuccess(int level);
 
     /**
-     * Invoked when the player fails a level, either because the typed
-     * text does not match the target word/phrase or because time ran out.
+     * Called when an answer is wrong. If there is still time left the
+     * player can keep trying; if the time ran out, {@link #onGameOver}
+     * is called right after.
      *
-     * @param level  the level number in which the failure occurred
-     * @param reason a short, human readable description of the failure
+     * @param level  the current level
+     * @param reason message describing the failure
      */
     void onLevelFailure(int level, String reason);
 
     /**
-     * Invoked once the match is over (i.e. after a failed level),
-     * providing a summary of the player's performance.
+     * Called when the match ends because the time ran out without a
+     * correct answer.
      *
-     * @param levelsCompleted the total amount of levels successfully completed
-     * @param timeRemaining   the time remaining on the failed level, in seconds
+     * @param levelsCompleted levels completed in the match
+     * @param timeRemaining   seconds left on the clock
      */
     void onGameOver(int levelsCompleted, double timeRemaining);
 }
