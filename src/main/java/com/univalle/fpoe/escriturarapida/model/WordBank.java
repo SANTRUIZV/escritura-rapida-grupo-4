@@ -4,19 +4,16 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Provides random words and short phrases that the player must type
- * during the "Escritura Rapida" game.
- * <p>
- * The bank mixes single words (early levels feel) with short phrases,
- * both selected uniformly at random so that every level shows an
- * unpredictable challenge, as required by HU-1.
+ * Bank of words and short phrases that the player must type.
+ * Some entries include capital letters and punctuation, since the
+ * answer has to match exactly.
  *
- * @author FPOE Team
+ * @author Santiago Ruiz Vanegas
  * @version 1.0
  */
 public class WordBank {
 
-    /** Pool of words and phrases available to be shown to the player. */
+    /** Words and phrases that can be shown to the player. */
     private static final List<String> POOL = List.of(
             "java",
             "evento",
@@ -24,32 +21,35 @@ public class WordBank {
             "mouse",
             "ventana",
             "compilar",
-            "excepcion",
+            "Excepcion",
             "interfaz",
             "adaptador",
             "programacion",
             "clase interna",
-            "controlador",
-            "escritura rapida",
+            "Controlador",
+            "Escritura Rapida",
             "manejo de eventos",
-            "diseno de interfaces",
-            "javafx es genial",
-            "el tiempo se agota",
-            "presiona enter para validar",
-            "la practica hace al maestro",
-            "cada nivel es un reto nuevo"
+            "Hola, mundo!",
+            "JavaFX es genial.",
+            "el tiempo se agota...",
+            "Presiona Enter para validar",
+            "La practica hace al maestro.",
+            "Cada nivel es un reto nuevo",
+            "Universidad del Valle",
+            "Que hora es?",
+            "Scene Builder y FXML",
+            "Java 17"
     );
 
-    /** Random generator used to pick entries from the pool. */
+    /** Random generator used to pick the entries. */
     private final Random random = new Random();
 
     /**
-     * Returns a random word or phrase from the internal pool.
+     * Returns a random word or phrase from the bank.
      *
-     * @return a randomly selected word or phrase, never {@code null}
+     * @return a random word or phrase
      */
     public String getRandomWord() {
-        int index = random.nextInt(POOL.size());
-        return POOL.get(index);
+        return POOL.get(random.nextInt(POOL.size()));
     }
 }
