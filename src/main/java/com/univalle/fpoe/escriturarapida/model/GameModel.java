@@ -6,53 +6,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds the game state and business rules for "Escritura Rapida"
- * and notifies every registered {@link GameListener} whenever a
- * relevant event occurs (level start, success, failure or game over).
+ * Game state and rules for "Escritura Rapida".
  * <p>
- * This class is intentionally independent from JavaFX: it does not
- * import any UI class, so it can be tested or reused regardless of
- * how the interface is rendered. All the JavaFX wiring lives in the
- * controller layer.
+ * Notifies the registered {@link GameListener}s when a level starts,
+ * when the player succeeds or fails, and when the match ends.
+ * It does not depend on JavaFX.
  *
- * @author FPOE Team
+ * @author Santiago Ruiz Vanegas
  * @version 1.0
  */
 public class GameModel {
 
-    /** Time limit, in seconds, used for the very first level. */
+    /** Time limit, in seconds, for the first level. */
     public static final double INITIAL_TIME_LIMIT = 20.0;
 
-    /** Amount of seconds subtracted from the time limit every 5 levels. */
+    /** Seconds subtracted from the time limit every 5 levels. */
     private static final double TIME_DECREMENT = 2.0;
 
-    /** Lower bound for the time limit, no matter how far the player advances. */
+    /** Minimum time limit per level, in seconds. */
     public static final double MIN_TIME_LIMIT = 2.0;
 
-    /** How many completed levels must pass before the time limit decreases again. */
+    /** Completed levels needed before the time limit decreases. */
     private static final int LEVELS_PER_DIFFICULTY_STEP = 5;
 
-    /** Source of random words/phrases shown to the player. */
+    /** Source of the random words and phrases. */
     private final WordBank wordBank;
 
-    /** Listeners subscribed to this model's events. */
+    /** Registered listeners. */
     private final List<GameListener> listeners = new ArrayList<>();
 
-    /** Current level number (1-based). */
+    /** Current level (starts at 1). */
     private int level;
 
-    /** Time limit, in seconds, applicable to the current level. */
+    /** Time limit, in seconds, for the current level. */
     private double currentTimeLimit;
 
     /** Word or phrase the player must type in the current level. */
     private String currentWord;
 
-    /** Total number of levels successfully completed in this match. */
+    /** Levels completed in the current match. */
     private int levelsCompleted;
 
     /**
-     * Creates a new game model with its own {@link WordBank} and
-     * resets it to its initial state.
+     * Creates a new game model with its own word bank.
      */
     public GameModel() {
         this.wordBank = new WordBank();
@@ -60,9 +56,9 @@ public class GameModel {
     }
 
     /**
-     * Registers a listener that will be notified about future game events.
+     * Registers a listener for the game events.
      *
-     * @param listener the listener to add; {@code null} values are ignored
+     * @param listener the listener to add; {@code null} is ignored
      */
     public void addGameListener(GameListener listener) {
         if (listener != null) {
@@ -71,9 +67,8 @@ public class GameModel {
     }
 
     /**
-     * Resets every piece of state to start a brand-new match:
-     * level 1, full time limit and zero completed levels. Does not,
-     * by itself, notify listeners; call {@link #startLevel()} afterwards.
+     * Resets the match: level 1, initial time limit and no completed levels.
+     * Call {@link #startLevel()} afterwards to start playing.
      */
     public void reset() {
         this.level = 1;
@@ -83,8 +78,7 @@ public class GameModel {
     }
 
     /**
-     * Starts the current level: picks a new random word/phrase and
-     * notifies every listener through {@link GameListener#onLevelStart}.
+     * Picks a new random word and notifies that the current level started.
      */
     public void startLevel() {
         this.currentWord = wordBank.getRandomWord();
@@ -94,33 +88,33 @@ public class GameModel {
     }
 
     /**
-     * Evaluates the player's answer for the current level.
+     * Checks the player's answer for the current level.
      * <p>
-     * Comparison is exact (case, spaces and punctuation all matter, per
-     * HU-1's acceptance criteria). On success the level and, every
-     * {@value #LEVELS_PER_DIFFICULTY_STEP} completed levels, the
-     * difficulty (time limit) are increased; on failure the match ends.
+     * The comparison is exact (letters, spaces, case and punctuation).
+     * A wrong answer while there is still time left only reports the
+     * error, so the player can try again. The match ends only when the
+     * time runs out and the answer is wrong.
      *
-     * @param typedAnswer   the text currently written by the player
-     * @param timeRemaining the time, in seconds, left on the clock at the
-     *                      moment of validation (used for reporting only)
-     * @param timedOut      {@code true} if the validation was triggered
-     *                      because the timer reached zero
+     * @param typedAnswer   text written by the player
+     * @param timeRemaining seconds left on the clock
+     * @param timedOut      {@code true} if the check was triggered because
+     *                      the time ran out
      */
     public void submitAnswer(String typedAnswer, double timeRemaining, boolean timedOut) {
         boolean isCorrect = currentWord != null && currentWord.equals(typedAnswer);
 
         if (isCorrect) {
             handleSuccess();
+        } else if (timedOut) {
+            handleTimeOut(typedAnswer, timeRemaining);
         } else {
-            String reason = timedOut ? "Tiempo agotado" : "Texto incorrecto";
-            handleFailure(reason, timeRemaining);
+            notifyFailure("Texto incorrecto, intenta de nuevo");
         }
     }
 
     /**
-     * Applies the success path: increases the completed-level counter,
-     * advances the level, adjusts the difficulty and starts the next level.
+     * Counts the completed level, moves to the next one and adjusts the
+     * difficulty if needed.
      */
     private void handleSuccess() {
         levelsCompleted++;
@@ -134,25 +128,35 @@ public class GameModel {
     }
 
     /**
-     * Applies the failure path: notifies the failure and then the
-     * game-over summary, ending the current match.
+     * Ends the match because the time ran out without a correct answer.
      *
-     * @param reason        human readable failure reason
-     * @param timeRemaining time left on the clock when the failure happened
+     * @param typedAnswer   text written by the player
+     * @param timeRemaining seconds left on the clock
      */
-    private void handleFailure(String reason, double timeRemaining) {
-        for (GameListener listener : listeners) {
-            listener.onLevelFailure(level, reason);
-        }
+    private void handleTimeOut(String typedAnswer, double timeRemaining) {
+        boolean empty = typedAnswer == null || typedAnswer.isEmpty();
+        notifyFailure(empty ? "Tiempo agotado, no escribiste nada" : "Tiempo agotado");
+
         for (GameListener listener : listeners) {
             listener.onGameOver(levelsCompleted, Math.max(0, timeRemaining));
         }
     }
 
     /**
-     * Reduces the time limit by {@value #TIME_DECREMENT} seconds every
-     * {@value #LEVELS_PER_DIFFICULTY_STEP} completed levels, never going
-     * below {@value #MIN_TIME_LIMIT} seconds, as required by HU-3.
+     * Notifies a failed attempt in the current level.
+     *
+     * @param reason message describing the failure
+     */
+    private void notifyFailure(String reason) {
+        for (GameListener listener : listeners) {
+            listener.onLevelFailure(level, reason);
+        }
+    }
+
+    /**
+     * Lowers the time limit by {@value #TIME_DECREMENT} seconds every
+     * {@value #LEVELS_PER_DIFFICULTY_STEP} completed levels, down to
+     * {@value #MIN_TIME_LIMIT} seconds.
      */
     private void adjustDifficultyIfNeeded() {
         if (levelsCompleted > 0 && levelsCompleted % LEVELS_PER_DIFFICULTY_STEP == 0) {
@@ -161,7 +165,7 @@ public class GameModel {
     }
 
     /**
-     * @return the current level number (1-based)
+     * @return the current level
      */
     public int getLevel() {
         return level;
@@ -175,14 +179,14 @@ public class GameModel {
     }
 
     /**
-     * @return the word or phrase the player must type in the current level
+     * @return the word or phrase of the current level
      */
     public String getCurrentWord() {
         return currentWord;
     }
 
     /**
-     * @return the total number of levels completed so far in this match
+     * @return the levels completed in the current match
      */
     public int getLevelsCompleted() {
         return levelsCompleted;
