@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+  Escritura Rápida - main view.
+  The three screens (start, game, summary) are stacked in the root StackPane;
+  only one is visible at a time (visible + managed are switched by the controller).
+  No onAction attributes on purpose: the controller registers the handlers
+  (inner classes / adapters) as required by the project statement.
+-->
+<StackPane fx:id="rootPane" focusTraversable="true" styleClass="root-pane"
+           stylesheets="@styles.css"
+           xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.univalle.fpoe.escriturarapida.controller.GameController">
+
+    <!-- ===================== START SCREEN ===================== -->
+    <VBox fx:id="startScreen" alignment="CENTER" spacing="22" styleClass="screen">
+        <Label styleClass="title" text="Escritura Rápida"/>
+        <Label minHeight="-Infinity" styleClass="subtitle"
+               text="Escribe cada palabra o frase exactamente como aparece, antes de que se acabe el tiempo."/>
+        <VBox maxWidth="620" spacing="10" styleClass="card">
+            <Label styleClass="card-title" text="¿Cómo se juega?"/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Cada nivel empieza con 20 segundos."/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Mayúsculas, espacios y puntuación cuentan: debe ser idéntico."/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Pulsa Enter o el botón Validar para comprobar tu respuesta."/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Si te equivocas y aún queda tiempo, puedes volver a intentarlo."/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Cada 5 niveles superados el tiempo baja 2 segundos (mínimo 2)."/>
+            <Label minHeight="-Infinity" styleClass="rule" text="• Pierdes si el tiempo se acaba y la respuesta no es correcta."/>
+        </VBox>
+        <Button fx:id="startButton" mnemonicParsing="false" styleClass="primary-button" text="Comenzar a jugar"/>
+        <Label styleClass="hint" text="También puedes pulsar Enter para empezar"/>
+    </VBox>
+
+    <!-- ===================== GAME SCREEN ===================== -->
+    <!-- Goes here: VBox fx:id="gameScreen" (visible="false" managed="false"). -->
+
+    <!-- ===================== SUMMARY SCREEN (HU-4) ===================== -->
+    <VBox fx:id="summaryScreen" alignment="CENTER" managed="false" spacing="20" styleClass="screen" visible="false">
+        <Label fx:id="summaryTitleLabel" styleClass="title" text="Fin de la partida"/>
+        <Label fx:id="summaryReasonLabel" minHeight="-Infinity" styleClass="subtitle" text="Tiempo agotado"/>
+        <GridPane alignment="CENTER" hgap="40" maxWidth="480" styleClass="card" vgap="14">
+            <Label styleClass="stat-name" text="Niveles completados"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="summaryLevelsLabel" styleClass="stat-value" text="0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label styleClass="stat-name" text="Tiempo restante"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="summaryTimeLabel" styleClass="stat-value" text="0.0 s"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
+        <HBox alignment="CENTER" spacing="14">
+            <Button fx:id="restartButton" mnemonicParsing="false" styleClass="primary-button" text="Jugar de nuevo"/>
+            <Button fx:id="exitButton" mnemonicParsing="false" styleClass="secondary-button" text="Salir"/>
+        </HBox>
+        <Label styleClass="hint" text="Pulsa Enter para reiniciar desde el nivel 1"/>
+    </VBox>
+</StackPane>

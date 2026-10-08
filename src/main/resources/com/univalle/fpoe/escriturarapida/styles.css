@@ -1,0 +1,66 @@
+/* Palette: paper #F4F6FB | card #FFFFFF | ink #1C2438 | muted #6B7490
+           red (Univalle) #C8102E | line #D0D5E2 */
+
+.root-pane {
+    -fx-background-color: #F4F6FB;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+}
+
+.screen { -fx-padding: 32 48 32 48; }
+
+/* ---------- Typography ---------- */
+.title {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #C8102E;
+}
+.subtitle {
+    -fx-font-size: 18px;
+    -fx-text-fill: #4A5470;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-max-width: 620;
+}
+.hint { -fx-font-size: 14px; -fx-text-fill: #6B7490; }
+.rule { -fx-font-size: 16px; -fx-text-fill: #1C2438; -fx-wrap-text: true; }
+
+/* ---------- Cards ---------- */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #D0D5E2;
+    -fx-border-radius: 12;
+    -fx-padding: 22 28 22 28;
+}
+.card-title { -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1C2438; }
+
+/* ---------- Buttons ---------- */
+.primary-button {
+    -fx-background-color: #C8102E;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 32 12 32;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.primary-button:hover   { -fx-background-color: #DE2B47; }
+.primary-button:pressed { -fx-background-color: #9E0C24; }
+.primary-button:focused { -fx-border-color: #1C2438; -fx-border-width: 2; -fx-border-radius: 8; }
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1C2438;
+    -fx-font-size: 18px;
+    -fx-padding: 11 28 11 28;
+    -fx-background-radius: 8;
+    -fx-border-color: #1C2438;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+.secondary-button:hover { -fx-background-color: #E3E7F0; }
+
+/* ---------- Summary ---------- */
+.stat-name  { -fx-font-size: 16px; -fx-text-fill: #4A5470; }
+.stat-value { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1C2438; }
