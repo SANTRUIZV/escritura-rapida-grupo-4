@@ -64,3 +64,9 @@
 /* ---------- Summary ---------- */
 .stat-name  { -fx-font-size: 16px; -fx-text-fill: #4A5470; }
 .stat-value { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1C2438; }
+
+/* ---------- Game screen ---------- */
+.timer { -fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #C8102E; }
+.word { -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1C2438; -fx-text-alignment: center; -fx-wrap-text: true; }
+.text-field { -fx-font-size: 18px; -fx-padding: 10 12 10 12; }
+.progress-bar { -fx-pref-height: 14px; }
