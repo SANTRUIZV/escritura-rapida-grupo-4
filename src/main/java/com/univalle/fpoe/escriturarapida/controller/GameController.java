@@ -198,13 +198,6 @@ public class GameController {
     };
 
     /**
-     * Creates the controller. JavaFX calls it when {@code game-view.fxml} is loaded.
-     */
-    public GameController() {
-        // Nothing to initialize: the FXML fields are injected by the FXMLLoader.
-    }
-
-    /**
      * Initializes the controller after the FXML file has been loaded.
      * Registers the model listener and all the event handlers.
      */
@@ -221,7 +214,6 @@ public class GameController {
         gameScreen.addEventFilter(KeyEvent.KEY_PRESSED, this::handleGameKey);
         summaryScreen.addEventFilter(KeyEvent.KEY_PRESSED, this::handleSummaryKey);
 
-        // Mouse event: clicking anywhere on the game screen returns the focus to the text field.
         gameScreen.addEventHandler(MouseEvent.MOUSE_CLICKED, new FocusAnswerFieldHandler());
 
         showStartScreen();
@@ -346,7 +338,7 @@ public class GameController {
     }
 
     /**
-     * Stops the current countdown, if any, to avoid several timers running at once.
+     * Stops the current countdown, if any.
      */
     private void stopTimer() {
         if (timer != null) {
