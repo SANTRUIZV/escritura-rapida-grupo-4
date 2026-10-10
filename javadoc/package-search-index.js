@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.univalle.fpoe.escriturarapida"},{"l":"com.univalle.fpoe.escriturarapida.controller"},{"l":"com.univalle.fpoe.escriturarapida.event"},{"l":"com.univalle.fpoe.escriturarapida.model"}];updateSearchResults();
